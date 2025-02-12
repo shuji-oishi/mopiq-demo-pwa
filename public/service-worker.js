@@ -6,7 +6,11 @@ const urlsToCache = [
   '/',
   '/index.html',
   '/manifest.json',
-  // 必要に応じて他のアセットを追加
+  '/_next/static/chunks/main.js',
+  '/_next/static/chunks/webpack.js',
+  '/_next/static/chunks/pages/_app.js',
+  '/_next/static/chunks/pages/index.js',
+  '/_next/static/css/styles.css'
 ];
 
 // Service Workerのインストール時の処理
@@ -14,9 +18,30 @@ self.addEventListener('install', (event) => {
   event.waitUntil(
     caches.open(CACHE_NAME)
       .then((cache) => {
+        console.log('Opened cache');
         return cache.addAll(urlsToCache);
       })
   );
+  // 即座にアクティベート
+  self.skipWaiting();
+});
+
+// Service Workerのアクティベート時の処理
+self.addEventListener('activate', (event) => {
+  event.waitUntil(
+    caches.keys().then((cacheNames) => {
+      return Promise.all(
+        cacheNames.map((cacheName) => {
+          if (cacheName !== CACHE_NAME) {
+            console.log('Deleting old cache:', cacheName);
+            return caches.delete(cacheName);
+          }
+        })
+      );
+    })
+  );
+  // 即座にコントロール開始
+  event.waitUntil(clients.claim());
 });
 
 // フェッチイベントの処理
