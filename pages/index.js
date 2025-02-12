@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import ColoringCanvas from "../components/ColoringCanvas";
 import NumberLinkCanvas from "../components/NumberLinkCanvas";
 import ChatBox from "../components/ChatBox";
@@ -9,6 +9,21 @@ export default function Home() {
   const [size, setSize] = useState(5);
   const [systemMessage, setSystemMessage] = useState("");
   const [mode, setMode] = useState("coloring");
+
+  useEffect(() => {
+    if (typeof window !== 'undefined' && 'serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker
+          .register('/service-worker.js')
+          .then((registration) => {
+            console.log('Service Worker registered:', registration);
+          })
+          .catch((error) => {
+            console.log('Service Worker registration failed:', error);
+          });
+      });
+    }
+  }, []);
 
   return (
     <div className={styles.container}>
