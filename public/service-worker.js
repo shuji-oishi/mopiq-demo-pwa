@@ -1,5 +1,5 @@
 // Service Worker version
-const CACHE_NAME = 'mopiq-cache-v1';
+const CACHE_NAME = 'mopiq-cache-v2';
 
 // キャッシュするファイルのリスト
 const urlsToCache = [

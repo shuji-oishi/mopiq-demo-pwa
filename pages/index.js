@@ -12,7 +12,14 @@ export default function Home() {
 
   useEffect(() => {
     if (typeof window !== 'undefined' && 'serviceWorker' in navigator) {
-      window.addEventListener('load', () => {
+      window.addEventListener('load', async () => {
+        // 既存のService Workerを登録解除
+        const registrations = await navigator.serviceWorker.getRegistrations();
+        for(let registration of registrations) {
+          await registration.unregister();
+        }
+
+        // 新しいService Workerを登録
         navigator.serviceWorker
           .register('/service-worker.js')
           .then((registration) => {
