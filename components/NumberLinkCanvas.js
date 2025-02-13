@@ -218,6 +218,12 @@ export default function NumberLinkCanvas({ color, size, onSystemMessage }) {
     }
   };
 
+  const handleComplete = () => {
+    // AIに評価を依頼する処理をここに追加
+    const evaluation = '素晴らしい！あなたの作品はとてもきれいですね！'; // 子供向けの評価内容
+    onSystemMessage(evaluation);
+  };
+
   return (
     <div>
       <canvas
@@ -231,8 +237,9 @@ export default function NumberLinkCanvas({ color, size, onSystemMessage }) {
         onMouseLeave={stopDrawing}
       />
       <div>
-        <button onClick={newPuzzle}>あたらしいパズル</button>
-        <button onClick={resetPaths}>やりなおす</button>
+        <button style={{ margin: '0 5px', padding: '10px 20px', backgroundColor: '#4CAF50', color: 'white' }} onClick={newPuzzle}>あたらしいパズル</button>
+        <button style={{ margin: '0 5px', padding: '10px 20px', backgroundColor: '#f44336', color: 'white' }} onClick={resetPaths}>やりなおす</button>
+        <button style={{ margin: '0 5px', padding: '10px 20px', backgroundColor: '#2196F3', color: 'white' }} onClick={handleComplete}>完了</button>
       </div>
     </div>
   );

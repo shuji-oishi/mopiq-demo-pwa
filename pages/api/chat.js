@@ -66,8 +66,9 @@ export default async function handler(req, res) {
       // JSONレスポンスをパースしてモードと返答を抽出
       try {
         console.log('Response text before parsing:', text);
-        const cleanedText = text.replace(/.*?({.*})/, '$1').trim();
-        const parsedResponse = JSON.parse(cleanedText);
+        const cleanedText = text.replace(/```json\s*|\s*```/g, '').trim();
+        const jsonText = cleanedText.replace(/.*?({.*})/, '$1').trim();
+        const parsedResponse = JSON.parse(jsonText);
         // 応答テキストから余分な改行や空白を整理
         const cleanResponse = parsedResponse.response
           .replace(/\\n/g, '\n')  // エスケープされた改行を実際の改行に
@@ -85,21 +86,10 @@ export default async function handler(req, res) {
           .replace(/```/g, '')      // コードブロックの終了タグを削除
           .trim();                  // 前後の空白を削除
 
-        // 余分なテキストを削除して、JSON文字列だけを抽出する処理を追加
-        const jsonText = cleanText.replace(/.*?({.*})/, '$1').trim();
-        try {
-          const parsedJson = JSON.parse(jsonText);
-          res.status(200).json({
-            mode: parsedJson.mode,
-            reply: parsedJson.response
-          });
-        } catch (jsonParseError) {
-          console.error('JSON parse error:', jsonParseError);
-          res.status(200).json({
-            mode: "unknown",
-            reply: cleanText
-          });
-        }
+        res.status(200).json({
+          mode: "unknown",
+          reply: cleanText
+        });
       }
     } catch (error) {
       console.error('Chat API error:', error);
